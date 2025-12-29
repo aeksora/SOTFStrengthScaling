@@ -21,11 +21,11 @@ public class ItemCapacityTester : MonoBehaviour
         _frameCount++;
 
         if (_frameCount < 8) {
-            Plugin.Instance.Log.LogInfo("Skipped check");
+            //Plugin.Instance.Log.LogInfo("Skipped check");
             return;
         }
 
-        Plugin.Instance.Log.LogInfo("Entered check");
+        //Plugin.Instance.Log.LogInfo("Entered check");
 
         if (_frameCount >= 5) {
             _frameCount = 0;
