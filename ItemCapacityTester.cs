@@ -45,6 +45,7 @@ public class ItemCapacityTester : MonoBehaviour
 
             if (LocalPlayer.GameObject == null)
             {
+                Plugin.Instance.Log.LogInfo("LocalPlayer.GameObject was null");
                 return;
             }
 
@@ -52,6 +53,7 @@ public class ItemCapacityTester : MonoBehaviour
 
             if (vitals == null)
             {
+                Plugin.Instance.Log.LogInfo("LocalPlayer.Vitals was null");
                 return;
             }
 
@@ -60,6 +62,7 @@ public class ItemCapacityTester : MonoBehaviour
             // Vitals not fully loaded
             if (strength <= 1)
             {
+                Plugin.Instance.Log.LogInfo("Strength was not fully loaded");
                 return;
             }
 
