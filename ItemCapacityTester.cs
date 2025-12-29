@@ -1,10 +1,8 @@
 ﻿using Sons.Items.Core;
-using UnityEngine;
-using TheForest.Utils;
-using static Util;
-using TheForest.Items.Inventory;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
+using TheForest.Utils;
+using UnityEngine;
+using static Util;
 
 public class ItemCapacityTester : MonoBehaviour
 {
@@ -20,14 +18,14 @@ public class ItemCapacityTester : MonoBehaviour
     {
         _frameCount++;
 
-        if (_frameCount < 8) {
+        if (_frameCount < 80) {
             //Plugin.Instance.Log.LogInfo("Skipped check");
             return;
         }
 
-        //Plugin.Instance.Log.LogInfo("Entered check");
+        Plugin.Instance.Log.LogInfo("Entered check");
 
-        if (_frameCount >= 5) {
+        if (_frameCount >= 80) {
             _frameCount = 0;
         }
 
@@ -43,9 +41,8 @@ public class ItemCapacityTester : MonoBehaviour
                 Init();
             }
 
-            if (LocalPlayer.GameObject == null)
-            {
-                Plugin.Instance.Log.LogInfo("LocalPlayer.GameObject was null");
+            if (!LocalPlayer.IsInWorld) {
+                Plugin.Instance.Log.LogInfo("Player is not yet in world");
                 return;
             }
 
@@ -109,16 +106,18 @@ public class ItemCapacityTester : MonoBehaviour
 
         foreach (ItemData item in ItemDatabaseManager._instance._itemDataList)
         {
-            int maxCapacity = 1000;
+            int maxCapacity = 100;
 
-            _originalItemCapacities.Add(item.Id, item.MaxAmount);
+            _originalItemCapacities.Add(item.Id, item._maxAmount);
 
             Plugin.Instance.Log.LogInfo($"Initializing {item.Name} with capacity of {maxCapacity}");
 
-            item.MaxAmount = maxCapacity;
+            item._maxAmount = maxCapacity;
         }
 
         _initialized = true;
+
+        Plugin.Instance.Log.LogInfo($"Done initializing");
     }
 
     private void LogItems(Vitals vitals)
@@ -139,46 +138,20 @@ public class ItemCapacityTester : MonoBehaviour
 
         foreach (ItemData item in ItemDatabaseManager._instance._itemDataList)
         {
-
-            //for (int i = 0; i < allowed.Length; i++)
-            //{
-            //    if (item._name == allowed[i])
-            //    {
-            //        int originalCapacity = _originalItemCapacities[item.Id];
-            //        Plugin.Instance.Log.LogInfo($"Received original capacity for {item.Name}: {originalCapacity}");
-            //        CapacityCalculation c = CalculateMaxCapacity(vitals.CurrentStrengthLevel, originalCapacity);
-
-            //        Plugin.Instance.Log.LogInfo($"{item.Name}: {{previous: {item.MaxAmount}, now: {c.actualValue} ({c.preciseValue})}}");
-
-            //        //PlayerInventory inv = LocalPlayer.Inventory;
-            //        //int maxAmountFromInventory = inv.GetMaxAmountOf(item.Id);
-            //        //bool hasRoomFor = inv.HasRoomFor(item.Id, 10);
-            //        //int getAvailableSpace = inv.GetAvailableSpaceForItem(item.Id);
-            //        //int amount = inv.GetItemInstancesOfType(item.Id).Count;
-
-            //        //Plugin.Instance.Log.LogInfo($"{item.Name}: {{GetMaxAmountOf: {amount}/{maxAmountFromInventory}, HasRoomFor: {hasRoomFor}, GetAvailableSpaceForItem: {getAvailableSpace}}}");
-
-            //        item.MaxAmount = c.actualValue;
-
-            //        //Plugin.Instance.Log.LogInfo(item._name + ": " + item._maxAmount);
-            //        break;
-            //    }
-            //}
-
             int originalCapacity = _originalItemCapacities[item.Id];
             Plugin.Instance.Log.LogInfo($"Received original capacity for {item.Name}: {originalCapacity}");
             CapacityCalculation c = CalculateMaxCapacity(vitals.CurrentStrengthLevel, originalCapacity);
 
-            int capacityBeforeModification = item.MaxAmount;
+            int capacityBeforeModification = item._maxAmount;
 
             if (originalCapacity > 1) {
-                item.MaxAmount = c.actualValue;
+                item._maxAmount = c.actualValue;
             }
             else if (originalCapacity <= 1) {
-                item.MaxAmount = originalCapacity;
+                item._maxAmount = originalCapacity;
             }
 
-            Plugin.Instance.Log.LogInfo($"{item.Name}: {{previous: {capacityBeforeModification}, now: {item.MaxAmount} ({c.preciseValue})}}");
+            Plugin.Instance.Log.LogInfo($"{item.Name}: {{previous: {capacityBeforeModification}, now: {item._maxAmount} ({c.preciseValue})}}");
         }
 
     }
