@@ -14,9 +14,23 @@ public class ItemCapacityTester : MonoBehaviour
     private float _lastStrengthProgress = 0.0f;
     private int _lastStrengthLevel = 1;
     private Dictionary<int, int> _originalItemCapacities = new Dictionary<int, int>();
+    private int _frameCount = 0;
 
     private void Update()
     {
+        _frameCount++;
+
+        if (_frameCount < 8) {
+            Plugin.Instance.Log.LogInfo("Skipped check");
+            return;
+        }
+
+        Plugin.Instance.Log.LogInfo("Entered check");
+
+        if (_frameCount >= 5) {
+            _frameCount = 0;
+        }
+
         if (!_ran)
         {
             if (ItemDatabaseManager._instance == null)
